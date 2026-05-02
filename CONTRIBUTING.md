@@ -1,53 +1,60 @@
 # Contributing
 
-Smallest viable workflow. We will tighten as the team and product grow.
+Smallest viable workflow. Stack is locked by the v1.1 [thesis](/ZHUA/issues/ZHUA-3#document-thesis).
 
 ## Prerequisites
 
-- Node.js 20 LTS or newer (`node --version`)
-- npm 10 or newer (ships with Node 20+)
+- Node.js 22 LTS or newer (`node --version`)
+- pnpm 9 or newer (`corepack enable && corepack prepare pnpm@9 --activate`)
 
 ## First-time setup
 
 ```sh
-npm install
+pnpm install
+cp .env.example .env.local
+pnpm db:migrate
 ```
 
 ## Canonical commands
 
-| Purpose | Command          | What it does                                                          |
-| ------- | ---------------- | --------------------------------------------------------------------- |
-| Build   | `npm run build`  | Compiles TypeScript in `src/` to `dist/`.                             |
-| Lint    | `npm run lint`   | Runs ESLint over the repo using the flat config (`eslint.config.js`). |
-| Format  | `npm run format` | Verifies Prettier formatting. Use `npm run format:write` to fix.      |
-| Test    | `npm test`       | Runs the Node built-in test runner against compiled `dist/` files.    |
+| Purpose          | Command                | What it does                                           |
+| ---------------- | ---------------------- | ------------------------------------------------------ |
+| Dev server       | `pnpm dev`             | Boots Next.js at http://localhost:3000.                |
+| Build            | `pnpm build`           | Production build (`.next/`).                           |
+| Lint + format    | `pnpm lint`            | Biome check (replaces ESLint + Prettier).              |
+| Typecheck        | `pnpm typecheck`       | `tsc --noEmit`.                                        |
+| Test             | `pnpm test`            | Vitest run.                                            |
+| DB migrate       | `pnpm db:migrate`      | Apply Drizzle migrations against `DATABASE_URL`.       |
+| DB generate      | `pnpm db:generate`     | Generate a new migration from `src/db/schema.ts`.      |
+| All checks       | `pnpm ci`              | Lint + typecheck + test (matches the GitHub workflow). |
 
-Run them all in order with:
-
-```sh
-npm run ci
-```
-
-The CI workflow at `.github/workflows/ci.yml` runs the same four commands on every push/PR to `main`.
+CI (`.github/workflows/ci.yml`) runs `pnpm install --frozen-lockfile`, `pnpm lint`, `pnpm typecheck`,
+`pnpm test`, `pnpm build` on every push/PR to `main`.
 
 ## Repo layout
 
 ```
 .
-├── src/                   # TypeScript source. Tests live next to code as *.test.ts.
-├── dist/                  # Compiled output. Git-ignored.
-├── .github/workflows/     # CI definitions.
-├── eslint.config.js       # ESLint flat config (v9+).
-├── .prettierrc.json       # Prettier rules.
-├── tsconfig.json          # TypeScript compiler config.
+├── src/
+│   ├── app/                  # Next.js App Router routes (UI + server actions).
+│   ├── db/                   # Drizzle schema, libsql client, migration runner.
+│   ├── lib/                  # Pure helpers; co-located *.test.ts.
+│   └── middleware.ts         # Edge basic-auth gate.
+├── drizzle/                  # Generated SQL migrations.
+├── e2e/                      # Playwright specs (added once UI worth E2E-ing).
+├── .github/workflows/ci.yml  # CI definition.
+├── biome.json                # Biome lint + format.
+├── drizzle.config.ts         # Drizzle Kit config.
+├── next.config.ts
 └── package.json
 ```
 
 ## Adding a feature
 
-1. Add code under `src/`. Co-locate tests as `<name>.test.ts`.
-2. Run `npm run ci` locally before pushing.
-3. Open a PR; CI must be green before merge.
+1. Add code under `src/`. Co-locate tests as `<name>.test.ts(x)`.
+2. If you change `src/db/schema.ts`, run `pnpm db:generate` and commit the generated SQL.
+3. Run `pnpm ci` locally before pushing.
+4. Open a PR; CI must be green before merge.
 
 ## Committing
 
@@ -59,14 +66,14 @@ Co-Authored-By: Paperclip <noreply@paperclip.ing>
 
 Pre-commit hooks and signing are not configured yet. We will add them when we have a reason to.
 
-## Stack rationale (default, pending thesis approval)
+## Deploy story
 
-The stack was chosen for _smallest viable, not enterprise-grade_:
-
-- **TypeScript on Node.js 20+** — generalist-friendly across CLI/API/web; flexible until product direction crystallizes.
-- **npm** — already installed with Node, no extra tooling step.
-- **ESLint flat config + Prettier** — current-generation defaults, low ceremony.
-- **`node:test`** — built-in, no extra test dependency for trivial cases. Swap to Vitest/Jest when we need richer ergonomics.
-- **GitHub Actions** — free for public + small private use; no new paid services.
-
-If the technical thesis ([ZHUA-3](/ZHUA/issues/ZHUA-3)) settles on a different stack, this doc and the scaffold will be revised in a follow-up.
+- Localhost: `pnpm dev`. SQLite file lives in `.data/` (gitignored).
+- Vercel preview/production: every deploy is gated by the Edge basic-auth middleware. Set
+  `BASIC_AUTH_USER`, `BASIC_AUTH_PASSWORD`, and `DATABASE_URL` (Turso libsql URL plus
+  `DATABASE_AUTH_TOKEN`) in Vercel project env. The middleware fails closed if either basic-auth
+  var is missing, so a misconfigured deploy returns 503 instead of silently exposing the Hypothesis
+  Ledger.
+- Vercel's filesystem is ephemeral, so a `file:` SQLite URL will not persist across cold starts in
+  production. The first preview deploy ticket is responsible for provisioning a Turso (free-tier)
+  database and wiring the env vars.
