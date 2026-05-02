@@ -77,3 +77,51 @@ Pre-commit hooks and signing are not configured yet. We will add them when we ha
 - Vercel's filesystem is ephemeral, so a `file:` SQLite URL will not persist across cold starts in
   production. The first preview deploy ticket is responsible for provisioning a Turso (free-tier)
   database and wiring the env vars.
+
+### First deploy (preview-only, paste-ready)
+
+Prereqs the CEO/owner provides once:
+
+1. A GitHub repo (empty is fine).
+2. Turso free-tier account + a database for ZHUA. Create with the Turso CLI:
+   ```sh
+   turso db create zhua-preview
+   turso db show zhua-preview --url             # → libsql://...turso.io  (DATABASE_URL)
+   turso db tokens create zhua-preview          # → DATABASE_AUTH_TOKEN
+   ```
+3. A Vercel project linked to the GitHub repo.
+
+Then, from this repo:
+
+```sh
+# 1. Push to GitHub.
+git remote add origin git@github.com:<owner>/zhua.git
+git push -u origin main
+
+# 2. Apply schema to the Turso database (run once, locally).
+DATABASE_URL='libsql://...turso.io' \
+DATABASE_AUTH_TOKEN='<token>' \
+  pnpm db:migrate
+
+# 3. Set Vercel project env (Production + Preview scopes).
+vercel link
+vercel env add DATABASE_URL          production preview
+vercel env add DATABASE_AUTH_TOKEN   production preview
+vercel env add BASIC_AUTH_USER       production preview
+vercel env add BASIC_AUTH_PASSWORD   production preview
+
+# 4. Trigger the first preview deploy.
+vercel --prod=false
+```
+
+Verify:
+
+```sh
+PREVIEW=https://<preview-host>.vercel.app
+curl -i "$PREVIEW/today"                                           # → 401
+curl -i -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASSWORD" "$PREVIEW/today" # → 200
+```
+
+Persistence check: create an entry on `/today`, redeploy with `vercel --force`, and confirm the
+entry is still there. If it disappears, `DATABASE_URL` is still pointing at a `file:` path and
+needs to be reset to the `libsql://` URL.
