@@ -20,6 +20,7 @@
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
+    "reports:snapshot": "tsx scripts/refresh-snapshot.ts",
     "ci": "pnpm lint && pnpm typecheck && pnpm test"
   },
   "dependencies": {
@@ -27,7 +28,9 @@
     "drizzle-orm": "^0.38.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

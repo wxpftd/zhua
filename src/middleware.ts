@@ -23,6 +23,12 @@ export function middleware(request: NextRequest): NextResponse {
     return NextResponse.next();
   }
 
+  // /reports/* is the public Research Reports surface (ZHUA-8). It deliberately
+  // bypasses the basic-auth gate; never serve auth-gated content under that path.
+  if (request.nextUrl.pathname.startsWith("/reports")) {
+    return NextResponse.next();
+  }
+
   const expectedUser = process.env.BASIC_AUTH_USER;
   const expectedPassword = process.env.BASIC_AUTH_PASSWORD;
 

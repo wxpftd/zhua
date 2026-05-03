@@ -254,3 +254,240 @@ button:hover {
   color: var(--accent);
   font-size: 0.9rem;
 }
+
+/* ---------- Research Reports (public, /reports) ---------- */
+
+.reports-shell {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.reports-topbar {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card);
+}
+.reports-topbar .reports-brand {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  font-size: 1rem;
+}
+.reports-topbar .reports-tagline {
+  color: var(--muted);
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+}
+
+.reports-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.reports-page-header {
+  margin-bottom: 1.75rem;
+}
+.reports-page-header h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.reports-meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.reports-empty {
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: var(--muted);
+  background: var(--card);
+}
+.reports-empty p {
+  margin: 0;
+}
+
+.reports-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.reports-card {
+  display: block;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.reports-card:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.reports-card-meta {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.reports-card-id {
+  font-family: ui-monospace, SF Mono, "JetBrains Mono", Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent);
+}
+.reports-card-title {
+  margin: 0.4rem 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.reports-card-tldr {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.reports-back {
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+.reports-detail-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+.reports-detail-header h1 {
+  margin: 0.5rem 0 0;
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Markdown body: keep readable line length and a bit of breathing room. */
+.report-prose {
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+.report-prose h2 {
+  margin: 2rem 0 0.6rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.report-prose h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.report-prose p {
+  margin: 0.85rem 0;
+}
+.report-prose ul,
+.report-prose ol {
+  padding-left: 1.4rem;
+  margin: 0.75rem 0;
+}
+.report-prose li {
+  margin: 0.3rem 0;
+}
+.report-prose blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1rem 0;
+  padding: 0.4rem 1rem;
+  color: var(--muted);
+  background: rgba(184, 92, 44, 0.05);
+  border-radius: 0 6px 6px 0;
+}
+.report-prose code {
+  font-family: ui-monospace, SF Mono, "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  .report-prose code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+.report-prose pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+@media (prefers-color-scheme: dark) {
+  .report-prose pre {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+.report-prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+.report-prose table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  width: 100%;
+  font-size: 0.95rem;
+}
+.report-prose th,
+.report-prose td {
+  border: 1px solid var(--rule);
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+}
+.report-prose th {
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .report-prose th {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+.report-prose hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 1.5rem 0;
+}
+
+.reports-footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+@media (max-width: 480px) {
+  .reports-topbar {
+    padding: 1rem 1rem 0.85rem;
+  }
+  .reports-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .reports-page-header h1 {
+    font-size: 1.5rem;
+  }
+  .reports-detail-header h1 {
+    font-size: 1.5rem;
+  }
+}
