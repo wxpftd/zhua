@@ -109,7 +109,6 @@ export function renderReportToStandaloneHtml(report: Report): string {
     '<meta name="viewport" content="width=device-width, initial-scale=1" />',
     `<title>${escapeHtml(report.title)} — ZHUA Research</title>`,
     `<meta name="description" content="${escapeHtml(report.tldr || `Research report ${report.issueIdentifier}`)}" />`,
-    '<meta name="robots" content="index,follow" />',
     `<style>${INLINE_STYLES}</style>`,
     "</head>",
     "<body>",

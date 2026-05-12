@@ -39,6 +39,13 @@ describe("renderReportToStandaloneHtml", () => {
     expect(html).not.toContain('<link rel="stylesheet"');
   });
 
+  // ZHUA-399: omit robots meta so accidentally-public exports default to
+  // search-engine-neutral; auth at the reverse proxy is the real gate.
+  it("omits the robots meta tag", () => {
+    const html = renderReportToStandaloneHtml(baseReport);
+    expect(html).not.toContain('name="robots"');
+  });
+
   it("escapes HTML-special characters in the title and metadata", () => {
     const html = renderReportToStandaloneHtml(baseReport);
     expect(html).toContain("Sample report &lt;with brackets&gt;");
