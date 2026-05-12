@@ -21,6 +21,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "reports:snapshot": "tsx scripts/refresh-snapshot.ts",
+    "pages:export": "tsx scripts/export-pages.ts",
     "ci": "pnpm lint && pnpm typecheck && pnpm test"
   },
   "dependencies": {
